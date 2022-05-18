@@ -1,13 +1,13 @@
 {
-  "name": "fluent-ui-automation",
-  "version": "0.1.0",
+  "name": "@bright-fish/fluent-ui-automation",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "dist/**/*"
   ],
