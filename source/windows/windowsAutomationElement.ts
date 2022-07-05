@@ -1,4 +1,4 @@
-import { AutomationElement, PatternIds, PropertyIds, TreeScopes } from "@bright-fish/node-ui-automation";
+import { AutomationElement, PatternIds, PropertyIds, TreeScopes, WindowVisualStates } from "@bright-fish/node-ui-automation";
 import { WindowsAutomationProvider } from ".";
 import { Scopes, SetRootAction, SetScopeAction } from "../actions";
 import { IAutomationProvider } from "../automationProvider";
@@ -81,68 +81,168 @@ export class WindowsAutomationElement implements IElement {
         return this.automationElement.currentIsOffscreen;
     }
 
-    setText(text: string): Promise<void> {
-        const valuePattern = this.automationElement.getCurrentPattern(PatternIds.ValuePatternId);
+    scrollTo(): Promise<void> {
+        const scrollItemPattern = this.automationElement.getCurrentPattern(PatternIds.ScrollItemPatternId);
 
-        if (valuePattern) {
-            valuePattern.setValue(text);
+        if (!scrollItemPattern) {
+            return Promise.reject();
         }
+
+        scrollItemPattern.scrollIntoView();
+
+        return Promise.reject();
+    }
+
+    invoke() {
+        const invokePattern = this.automationElement.getCurrentPattern(PatternIds.InvokePatternId);
+
+        if (!invokePattern) {
+            return Promise.reject();
+        }
+
+        invokePattern.invoke();
 
         return Promise.resolve();
     }
 
-    scrollTo(): Promise<void> {
-        const scrollItemPattern = this.automationElement.getCurrentPattern(PatternIds.ScrollItemPatternId);
-
-        if (scrollItemPattern) {
-            scrollItemPattern.scrollIntoView();
-
-            return Promise.resolve();
-        }
-
-        return Promise.reject();
-    }
-
-    click(): Promise<void> {
-        const invokePattern = this.automationElement.getCurrentPattern(PatternIds.InvokePatternId);
-
-        if (invokePattern) {
-            invokePattern.invoke();
-            return Promise.resolve();
-        }
-
+    select() {
         const selectionItemPattern = this.automationElement.getCurrentPattern(PatternIds.SelectionItemPatternId);
 
-        if (selectionItemPattern) {
-            selectionItemPattern.select();
+        if (!selectionItemPattern) {
+
             return Promise.resolve();
         }
 
+        selectionItemPattern.select();
+
+        return Promise.resolve();
+    }
+
+    toggle() {
         const togglePattern = this.automationElement.getCurrentPattern(PatternIds.TogglePatternId);
 
-        if (togglePattern) {
-            togglePattern.toggle();
-            return Promise.resolve();
+        if (!togglePattern) {
+            return Promise.reject();
         }
 
-        return Promise.reject();
+        togglePattern.toggle();
+
+        return Promise.resolve();
     }
 
-    getText(): Promise<string> {
-        const valuePattern = this.automationElement.getCurrentPattern(PatternIds.ValuePatternId);
+    expand() {
+        const expandCollapsePattern = this.automationElement.getCurrentPattern(PatternIds.ExpandCollapsePatternId);
 
-        if (valuePattern) {
-            return Promise.resolve(valuePattern.currentValue);
+        if (!expandCollapsePattern) {
+            return Promise.reject();
         }
 
-        return Promise.resolve(null);
+        expandCollapsePattern.expand();
     }
 
-    sendKeys(value: string): Promise<void> {
+    collapse() {
+        const expandCollapsePattern = this.automationElement.getCurrentPattern(PatternIds.ExpandCollapsePatternId);
+
+        if (!expandCollapsePattern) {
+            return Promise.reject();
+        }
+
+        expandCollapsePattern.collapse();
+    }
+
+    close() {
+        const windowPattern = this.automationElement.getCurrentPattern(PatternIds.WindowPatternId);
+
+        if (!windowPattern) {
+            return Promise.reject();
+        }
+
+        windowPattern.close();
+
+        return Promise.resolve();
+    }
+
+    maximize() {
+        const windowPattern = this.automationElement.getCurrentPattern(PatternIds.WindowPatternId);
+
+        if (!windowPattern) {
+            return Promise.reject();
+        }
+
+        if(!windowPattern.currentCanMaximize) { 
+            return Promise.reject();
+        }
+
+        windowPattern.setWindowVisualState(WindowVisualStates.Maximized);
+
+        return Promise.resolve();
+    }
+
+    minimize() {
+        const windowPattern = this.automationElement.getCurrentPattern(PatternIds.WindowPatternId);
+
+        if (!windowPattern) {
+            return Promise.reject();
+        }
+
+        if(!windowPattern.currentCanMinimize){
+            return Promise.reject();
+        }
+
+        windowPattern.setWindowVisualState(WindowVisualStates.Minimized);
+
+        return Promise.resolve();
+    }
+
+    restore() {
+        const windowPattern = this.automationElement.getCurrentPattern(PatternIds.WindowPatternId);
+
+        if (!windowPattern) {
+            return Promise.reject();
+        }
+
+        windowPattern.setWindowVisualState(WindowVisualStates.Normal);
+
+        return Promise.resolve();
+    }
+
+    realize() {
+        const virtualizedItemPattern = this.automationElement.getCurrentPattern(PatternIds.VirtualizedItemPatternId);
+
+        if (!virtualizedItemPattern) {
+            return Promise.reject();
+        }
+
+        virtualizedItemPattern.realize();
+
+        return Promise.resolve();
+    }
+
+    getValue() {
         const valuePattern = this.automationElement.getCurrentPattern(PatternIds.ValuePatternId);
+
+        if (!valuePattern) {
+            return Promise.resolve(null);
+        }
+
+        return Promise.resolve(valuePattern.currentValue);
+    }
+
+    setValue(value: string) {
+        const valuePattern = this.automationElement.getCurrentPattern(PatternIds.ValuePatternId);
+
+        if (!valuePattern) {
+            return Promise.reject();
+        }
 
         valuePattern.setValue(value);
 
+        return Promise.resolve();
+    }
+
+    focus(): Promise<void> {
+        this.automationElement.setFocus();
+        
         return Promise.resolve();
     }
 

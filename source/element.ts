@@ -18,9 +18,17 @@ export interface IElement extends ICloneable<IElement> {
     get isOffscreen(): boolean;
     get processId(): number;
 
-    setText(text: string): Promise<void>;
     scrollTo(): Promise<void>;
-    click(): Promise<void>;
-    getText(): Promise<string>;
-    sendKeys(value: string): Promise<void>;
+    invoke(): Promise<void>;
+    select(): Promise<void>;
+    toggle(): Promise<void>;
+    expand(): Promise<void>;
+    collapse(): Promise<void>;
+    close(): Promise<void>;
+    maximize(): Promise<void>;
+    minimize(): Promise<void>;
+    restore(): Promise<void>;
+    getValue(): Promise<string>;
+    setValue(value: string): Promise<void>;
+    focus(): Promise<void>;
 }
